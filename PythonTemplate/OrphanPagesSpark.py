@@ -27,8 +27,8 @@ orphanPages = pages.union(referenced).reduceByKey(lambda a,b: a + b).filter(lamb
 orphans = orphanPages.sortByKey().collect()
 
 output = open(sys.argv[2], "w")
-for orphan in orphans:
-    output.write(f"{orphan}\n")
+for page, count in orphans:
+    output.write(f"{page}\n")
 
 sc.stop()
 
