@@ -8,18 +8,26 @@ sc = SparkContext(conf=conf)
 
 lines = sc.textFile(sys.argv[1], 1)
 
-#TODO
+def parser(line):
+    line = line.strip()
+    title, count = line.split('\t', 1)
+    return count
+
+attributes = lines.map(parser)
+sum_val = attributes.reduce(lambda a, b: a + b)
+count = attributes.count()
+mean_val = sum_val / count
+min_val = attributes.min()
+max_val = attributes.max()
+variance = attributes.map(lambda x: (x - mean_val) ** 2).reduce(lambda a, b: a + b) / count
 
 outputFile = open(sys.argv[2], "w")
-'''
-TODO write your output here
-write results to output file. Format
-outputFile.write('Mean\t%s\n' % ans1)
-outputFile.write('Sum\t%s\n' % ans2)
-outputFile.write('Min\t%s\n' % ans3)
-outputFile.write('Max\t%s\n' % ans4)
-outputFile.write('Var\t%s\n' % ans5)
-'''
+
+outputFile.write('Mean\t%s\n' % int(mean_val))
+outputFile.write('Sum\t%s\n' % sum_val)
+outputFile.write('Min\t%s\n' % min_val)
+outputFile.write('Max\t%s\n' % max_val)
+outputFile.write('Var\t%s\n' % int(variance))
 
 sc.stop()
 
