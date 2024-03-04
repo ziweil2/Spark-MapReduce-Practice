@@ -7,6 +7,8 @@ conf = SparkConf().setMaster("local").setAppName("PopularityLeague")
 conf.set("spark.driver.bindAddress", "127.0.0.1")
 sc = SparkContext(conf=conf)
 
+lines = sc.textFile(sys.argv[1])
+
 def parser(line):
     line = line.split(':')
     page = line[0].strip()
