@@ -34,9 +34,10 @@ wordCounts = lines.flatMap(split_line) \
     .sortByKey(False)
 
 topWords = wordCounts.take(10)
+result = sorted(topWords, key=lambda x:(x[0], x[1]))
 outputFile = open(sys.argv[4],"w")
 
-for count, word in results:
+for count, word in result:
     outputFile.write(f"{word}\t{count}\n")
 
 outputFile.close()
