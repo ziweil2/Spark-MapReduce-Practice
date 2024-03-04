@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-#Execution Command: spark-submit PopularityLeagueSpark.py dataset/links/ dataset/league.txt
 import sys
 from pyspark import SparkConf, SparkContext
 
@@ -10,16 +9,29 @@ sc = SparkContext(conf=conf)
 
 lines = sc.textFile(sys.argv[1], 1) 
 
-#TODO
+def parser(line):
+    line = line.split(':')
+    page = line[0].strip()
+    links = line[1].strip().split() if len(line) > 1 else []
+    return [(link, 1) for link in links if link != page]
+
+linkCounts = lines.flatMap(parser)
+popularityCounts = linkCounts.reduceByKey(lambda a, b: a + b)
 
 leagueIds = sc.textFile(sys.argv[2], 1)
+leaguePages = popularityCounts.filter(lambda x: x[0] in leagueIds)
 
-#TODO
+sortedLeaguePages = leaguePages.sortBy(lambda x: (x[1], x[0]))
+
+pageRanks = sortedLeaguePages.zipWithIndex().map(lambda x: (x[0][0], x[1] + 1))
+
+result = pageRanks.sortBy(lambda x: x[0])
 
 output = open(sys.argv[3], "w")
 
-#TODO
-#write results to output file. Foramt for each line: (key + \t + value +"\n")
+# write results to output file. Foramt for each line: (key + \t + value +"\n")
+for page, rank in result:
+    output.write(f"{page}\t{rank}\n")
 
 sc.stop()
 
