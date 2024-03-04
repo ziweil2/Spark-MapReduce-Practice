@@ -19,7 +19,7 @@ linkCounts = parsedLines.flatMap(lambda x: [(link,1) for link in x[1] if link !=
                         .reduceByKey(lambda a, b: a + b)
 
 topLinks = linkCounts.sortBy(lambda x: x[1], ascending=False).take(10)
-result = sorted(topLinks, key=lambda x: (x[1], x[0]))
+result = sorted(topLinks, key=lambda x: (x[0], x[1]))
 
 output = open(sys.argv[2], "w")
 for link, count in result:

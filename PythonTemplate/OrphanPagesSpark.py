@@ -11,8 +11,7 @@ lines = sc.textFile(sys.argv[1], 1)
 def parser(line):
     line = line.split(':')
     page = line[0].strip()
-    links = [link.strip() for link in line[1].split() if len(line) > 1 and line[1].strip() != "" and link.strip() != 
-page]
+    links = [link.strip() for link in line[1].split() if len(line) > 1 and line[1].strip() != ""]
     return (page, links)
 
 parsedLines = lines.map(parser)
